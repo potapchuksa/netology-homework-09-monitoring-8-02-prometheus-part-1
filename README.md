@@ -43,6 +43,50 @@
 
 ### Решение
 
+```
+sudo useradd --no-create-home --shell /bin/false prometheus
+sudo mkdir -p /etc/prometheus /var/lib/prometheus
+wget https://github.com/prometheus/prometheus/releases/download/v3.4.1/prometheus-3.4.1.linux-amd64.tar.gz
+tar -xvf prometheus-3.4.1.linux-amd64.tar.gz
+sudo cp prometheus-3.4.1.linux-amd64/prometheus /usr/local/bin/
+sudo cp prometheus-3.4.1.linux-amd64/promtool /usr/local/bin/
+sudo cp prometheus-3.4.1.linux-amd64/prometheus.yml /etc/prometheus/
+sudo chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus
+```
+
+![](img/img-01-01.png)
+
+Считаю, что права на prometheus и promtool менять не нужно (даже вредно для безопасности), менять и читать может только root, и это правильно, выполнять все, и этого достаточно.
+
+
+* Начиная с версии 3.0, **consoles** и **console_libraries** убрали из релиза, потому что:
+
+  * Они были неудобными и редко использовались.
+
+  * Вместо них все используют Grafana (гораздо мощнее).
+
+* Основной интерфейс (http://localhost:9090) остался и работает без них.
+
+Проверяю работу:
+
+```
+sudo -u prometheus prometheus \
+    --config.file=/etc/prometheus/prometheus.yml \
+    --storage.tsdb.path=/var/lib/prometheus/
+```
+
+![](img/img-01-02.png)
+
+Создаю сервис: [prometheus.service](services/prometheus.service)
+
+![](img/img-01-03.png)
+
+Запускаю и проверяю:
+
+![](img/img-01-04.png)
+
+![](img/img-01-05.png)
+
 ---
 
 ### Задание 2
