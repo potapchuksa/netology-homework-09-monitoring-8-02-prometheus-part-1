@@ -103,6 +103,35 @@ sudo -u prometheus prometheus \
 
 ### Решение
 
+```
+sudo useradd --no-create-home --shell /bin/false node_exporter
+https://github.com/prometheus/node_exporter/releases/download/v1.9.1/node_exporter-1.9.1.linux-amd64.tar.gz
+tar -xvf node_exporter-1.9.1.linux-amd64.tar.gz
+sudo cp node_exporter-1.9.1.linux-amd64/node_exporter /usr/local/bin/
+```
+Использую отдельного пользователя node_exporter для безопасности
+
+Запустил и проверил
+
+![](img/img-02-01.png)
+
+![](img/img-02-02.png)
+
+Создал файл сервиса: [node_exporter.service](services/node_exporter.service)
+
+![](img/img-02-03.png)
+
+Запустил и проверил
+
+```
+sudo systemctl enable node_exporter.service --now
+sudo systemctl status node_exporter.service
+```
+
+![](img/img-02-04.png)
+
+![](img/img-02-05.png)
+
 ---
 
 ### Задание 3
@@ -120,6 +149,25 @@ sudo -u prometheus prometheus \
 
 ### Решение
 
+Добавил в файл /etc/prometheus/prometheus.yml в - targets: "localhost:9100"
+
+![](img/img-03-01.png)
+
+Рестартанул prometheus и проверил статус
+
+```
+sudo systemctl restart prometheus.service
+sudo systemctl status prometheus.service
+```
+
+![](img/img-03-02.png)
+
+Проверил подключение Node Exportera к Prometheus
+
+![](img/img-03-03.png)
+
+![](img/img-03-04.png)
+
 ---
 ## Дополнительные задания со звёздочкой*
 Эти задания дополнительные. Их можно не выполнять. Это не повлияет на зачёт. Вы можете их выполнить, если хотите глубже разобраться в материале.
@@ -134,9 +182,30 @@ sudo -u prometheus prometheus \
 
 ### Решение
 
+```
+sudo apt install -y adduser libfontconfig1 musl
+wget https://dl.grafana.com/oss/release/grafana_12.0.1_amd64.deb
+sudo dpkg -i grafana_12.0.1_amd64.deb
+sudo systemctl enable --now grafana-server.service
+sudo systemctl status grafana-server.service
+```
+
+![](img/img-04-01.png)
+
+Вход в браузере (логин и пароль по умолчанию: admin, admin)
+
+![](img/img-04-02.png)
+
+Настройки пользователя теперь не в левом нижнем, а в правом верхнем углу.
+
+![](img/img-04-03.png)
+
 ---
 
 ### Задание 5*
 Интегрируйте Grafana и Prometheus.
 
 ### Решение
+
+![](img/img-05-01.png)
+
